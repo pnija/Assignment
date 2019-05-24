@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css'>
+        <link rel='stylesheet' href='https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css'>
+        <link rel='stylesheet' href='https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css'>
+    </head>
+{% include 'header.html' %}
+<div class="container">
+        <div class="row">
+            {% if messages %}
+            <div class="row">
+                <div style="text-align: center;" class="col-sm-6 col-sm-offset-3">
+                        {% for message in messages %}
+                            <p{% if message.tags == "success" %} class="alert alert-success"{% endif %}>{{ message }}</p>
+                        {% endfor %}
+                </div>
+            </div>
+        </div>
+{% endif %}
+
+{% block content %}
+
+        <h2>Client Add Form</h2>
+        <form method="POST" class="post-form" novalidate>{% csrf_token %}
+
+        <table>
+
+          <tr>
+            <td><b>Full name:</b></td>
+            <td>{{ form.client_name }}</td>
+          </tr>
+
+          <tr>
+            <td><b>Street Name:</b></td>
+            <td>{{ form.street_name }}</td>
+          </tr>
+
+          <tr>
+            <td><b>Suburb:</b></td>
+            <td>{{ form.suburb }}</td>
+          </tr>
+
+          <tr>
+            <td><b>Postcode:</b></td>
+            <td>{{ form.postcode }}</td>
+          </tr>
+
+          <tr>
+            <td><b>State:</b></td>
+            <td>{{ form.state }}</td>
+          </tr>
+
+
+          <tr>
+            <td><b>Client contact name:</b></td>
+            <td>{{ form.client_contact_name }}</td>
+          </tr>
+
+          <tr>
+            <td><b>Email:</b></td>
+            <td>{{ form.email }}</td>
+          </tr>
+
+          <tr>
+            <td><b>Phone Number:</b></td>
+            <td>{{ form.phone_number }}</td>
+          </tr>
+
+        </table>
+
+            <button type="submit" class="save btn btn-default">Save</button>
+        </form>
+    </div>
+{% endblock %}
+
+<style>
+table {
+    border-collapse: collapse;
+}
+
+td {
+    padding-top: .5em;
+    padding-bottom: .5em;
+}
+</style>

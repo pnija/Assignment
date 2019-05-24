@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+{% load static %}
+<head>
+    <link rel="stylesheet" href="{% static 'css/client-edit.css' %}">
+    <!--<script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>-->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+</head>
+{% include 'header.html' %}
+<div class="container">
+    <div class="row">
+        {% if messages %}
+        <div class="row">
+            <div style="text-align: center;" class="col-sm-6 col-sm-offset-3">
+                    {% for message in messages %}
+                        <p{% if message.tags == "success" %} class="alert alert-success"{% endif %}>{{ message }}</p>
+                    {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endif %}
+
+{% block content %}
+    <h2>Client Edit Form</h2>
+    <form method="POST" class="post-form" onsubmit="return validate();" novalidate>{% csrf_token %}
+        <p>
+            <label id="id_client_list">Select Client:</label>
+            <select onchange="get_client_details(this)" id="select_id" name="select_id" class="client_name">
+                <option value="0">--Select--</option>
+                {% for client in client_list %}
+                <option value="{{ client.id }}">{{ client.client_contact_name }}</option>
+                {% endfor %}
+            </select>
+        </p>
+         <table>
+          <tr>
+            <td><b>Full name:</b></td>
+            <td>{{ form.client_name }}</td>
+          </tr>
+          <tr>
+            <td><b>Street Name:</b></td>
+            <td>{{ form.street_name }}</td>
+          </tr>
+          <tr>
+            <td><b>Suburb:</b></td>
+            <td>{{ form.suburb }}</td>
+          </tr>
+          <tr>
+            <td><b>Postcode:</b></td>
+            <td>{{ form.postcode }}</td>
+          </tr>
+          <tr>
+            <td><b>State:</b></td>
+            <td>{{ form.state }}</td>
+          </tr>
+          <tr>
+            <td><b>Client contact name:</b></td>
+            <td>{{ form.client_contact_name }}</td>
+          </tr>
+          <tr>
+            <td><b>Email:</b></td>
+            <td>{{ form.email }}</td>
+          </tr>
+          <tr>
+            <td><b>Phone Number:</b></td>
+            <td>{{ form.phone_number }}</td>
+          </tr>
+        </table>
+        <button type="submit" class="save btn btn-default">Update</button>
+    </form>
+{% endblock %}
+</div>
+<script>
+    function get_client_details(selected_item) {
+        var client_id = (selected_item.value || selected_item.options[selected_item.selectedIndex].value);
+
+        $.ajax({
+            url: "{% url 'get_edit_details' %}",
+            method: 'GET',
+            data: {
+                'client_id': client_id
+            },
+            dataType: 'json',
+            success: function(data) {
+                for(var key in data) {
+                    $("input[name='" + key + "']").val(data[key]);
+                }
+            }
+        });
+
+    }
+
+    $( document ).ready(function() {
+        var pageURL = $(location).attr("href");
+
+
+        if (pageURL.indexOf('?') > -1)
+        {
+            var res = pageURL.split("=");
+            client_id=res[1];
+
+            $("#select_id").val(client_id);
+
+
+        $.ajax({
+            url: "{% url 'get_edit_details' %}",
+            method: 'GET',
+            data: {
+                'client_id': client_id
+            },
+            dataType: 'json',
+            success: function(data) {
+                for(var key in data) {
+                    $("input[name='" + key + "']").val(data[key]);
+                }
+            }
+        });
+
+        }
+
+    });
+
+    function validate(){
+        selcted_item_value = $("#select_id").val();
+
+        if (selcted_item_value == "0"){
+            return false;
+        }
+    }
+
+</script>
+
+<style>
+table {
+    border-collapse: collapse;
+}
+
+td {
+    padding-top: .5em;
+    padding-bottom: .5em;
+}
+</style>
+
